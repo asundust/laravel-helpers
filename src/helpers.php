@@ -6,6 +6,7 @@ if (!function_exists('da')) {
      * 如果能转成toArray()则转成数组.
      *
      * @param ...$args
+     *
      * @return void
      */
     function da(...$args)
@@ -29,6 +30,7 @@ if (!function_exists('dda')) {
      */
     /**
      * @param ...$args
+     *
      * @return void
      */
     function dda(...$args)
@@ -70,8 +72,8 @@ if (!function_exists('number_format')) {
     /**
      * 数字格式化.
      *
-     * @param mixed $number 数字
-     * @param int $decimal 保留小数位数
+     * @param mixed $number  数字
+     * @param int   $decimal 保留小数位数
      */
     function number_format($number, $decimal = 2)
     {
@@ -79,7 +81,7 @@ if (!function_exists('number_format')) {
             return '0.00';
         }
 
-        return sprintf('%01.' . $decimal . 'f', $number);
+        return sprintf('%01.'.$decimal.'f', $number);
     }
 }
 
@@ -90,6 +92,7 @@ if (!function_exists('pluck_to_array')) {
      * @param $array
      * @param string $value
      * @param string $key
+     *
      * @return array
      */
     function pluck_to_array($array, $value = 'value', $key = 'id')
@@ -115,9 +118,9 @@ if (!function_exists('log_i')) {
      * log_info => log_i.
      *
      * @param array|string|null $message 日志信息
-     * @param string|null $name 日志文件名
-     * @param string|null $path 日志写入路径
-     * @param int $max 该目录下最大日志文件数
+     * @param string|null       $name    日志文件名
+     * @param string|null       $path    日志写入路径
+     * @param int               $max     该目录下最大日志文件数
      */
     function log_i($message = '', $name = 'test', $path = '', $max = 14)
     {
@@ -125,9 +128,9 @@ if (!function_exists('log_i')) {
             $path = $name;
         }
         config([
-            'logging.channels.' . $path . '_' . $name => [
+            'logging.channels.'.$path.'_'.$name => [
                 'driver' => 'daily',
-                'path' => storage_path('logs/' . $path . '/' . $name . '.log'),
+                'path' => storage_path('logs/'.$path.'/'.$name.'.log'),
                 'level' => 'debug',
                 'days' => $max,
             ],
@@ -141,10 +144,10 @@ if (!function_exists('log_i')) {
             }
         }
         if (!is_array($message)) {
-            logger()->channel($path . '_' . $name)->info($type . PHP_EOL . $message);
+            logger()->channel($path.'_'.$name)->info($type.PHP_EOL.$message);
         } else {
-            logger()->channel($path . '_' . $name)->info($type);
-            logger()->channel($path . '_' . $name)->info($message);
+            logger()->channel($path.'_'.$name)->info($type);
+            logger()->channel($path.'_'.$name)->info($message);
         }
     }
 }
@@ -155,8 +158,8 @@ if (!function_exists('log_s')) {
      * log_sample => log_s.
      *
      * @param string|array|null $message
-     * @param string $path
-     * @param string $name
+     * @param string            $path
+     * @param string            $name
      */
     function log_s($message, $path = '', $name = 'log')
     {
@@ -164,11 +167,11 @@ if (!function_exists('log_s')) {
             $message = var_export($message->toArray(), true);
         }
         if ($path) {
-            $path = trim($path, '/') . '/';
-            create_dir(storage_path('logs/' . $path));
+            $path = trim($path, '/').'/';
+            create_dir(storage_path('logs/'.$path));
         }
-        $handle = fopen(storage_path('logs/' . $path . $name . '-' . date('Y-m-d') . '.log'), 'a');
-        fwrite($handle, $message . "\n");
+        $handle = fopen(storage_path('logs/'.$path.$name.'-'.date('Y-m-d').'.log'), 'a');
+        fwrite($handle, $message."\n");
         fclose($handle);
     }
 }
@@ -203,7 +206,7 @@ if (!function_exists('console_line')) {
             ];
             $code = $types[$type] ?? '37';
             // 30黑色，31红色，32绿色，33黄色，34蓝色，35洋红，36青色，37白色，
-            echo chr(27) . '[' . $code . 'm' . "$text" . chr(27) . '[0m' . PHP_EOL;
+            echo chr(27).'['.$code.'m'."$text".chr(27).'[0m'.PHP_EOL;
         }
     }
 }
