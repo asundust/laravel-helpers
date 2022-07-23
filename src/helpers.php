@@ -75,8 +75,8 @@ if (!function_exists('number_format')) {
     /**
      * 数字格式化.
      *
-     * @param string|int $number 数字
-     * @param int $decimal 保留小数位数
+     * @param string|int $number  数字
+     * @param int        $decimal 保留小数位数
      */
     function number_format($number, $decimal = 2)
     {
