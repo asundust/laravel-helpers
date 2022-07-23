@@ -11,9 +11,12 @@ if (!function_exists('da')) {
      */
     function da(...$args)
     {
+        if (!in_array(\PHP_SAPI, ['cli', 'phpdbg'], true) && !headers_sent()) {
+            header('HTTP/1.1 500 Internal Server Error');
+        }
         $varDumper = new Symfony\Component\VarDumper\VarDumper();
         foreach ($args as $x) {
-            if (method_exists($x, 'toArray')) {
+            if ((is_object($x) || is_string($x)) && method_exists($x, 'toArray')) {
                 $x = $x->toArray();
             }
             $varDumper->dump($x);
@@ -72,8 +75,8 @@ if (!function_exists('number_format')) {
     /**
      * 数字格式化.
      *
-     * @param mixed $number  数字
-     * @param int   $decimal 保留小数位数
+     * @param string|int $number 数字
+     * @param int $decimal 保留小数位数
      */
     function number_format($number, $decimal = 2)
     {
