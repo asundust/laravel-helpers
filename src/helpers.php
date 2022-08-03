@@ -176,7 +176,7 @@ if (!function_exists('log_s')) {
         }
         $handle = fopen(storage_path('logs/'.$path.$name.'-'.date('Y-m-d').'.log'), 'a');
         if ($appendTime) {
-            $message = '[' . date('Y-m-d H:i:s') . ']' . $message;
+            $message = '['.date('Y-m-d H:i:s').']'.$message;
         }
         fwrite($handle, $message."\n");
         fclose($handle);
