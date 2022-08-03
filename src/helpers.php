@@ -163,8 +163,9 @@ if (!function_exists('log_s')) {
      * @param string|array|null $message
      * @param string            $path
      * @param string            $name
+     * @param bool              $appendTime
      */
-    function log_s($message, $path = '', $name = 'log')
+    function log_s($message, $path = '', $name = 'log', $appendTime = false)
     {
         if (method_exists($message, 'toArray')) {
             $message = var_export($message->toArray(), true);
@@ -174,6 +175,9 @@ if (!function_exists('log_s')) {
             create_dir(storage_path('logs/'.$path));
         }
         $handle = fopen(storage_path('logs/'.$path.$name.'-'.date('Y-m-d').'.log'), 'a');
+        if ($appendTime) {
+            $message = '[' . date('Y-m-d H:i:s') . ']' . $message;
+        }
         fwrite($handle, $message."\n");
         fclose($handle);
     }
