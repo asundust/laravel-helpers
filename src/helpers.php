@@ -255,9 +255,10 @@ if (!function_exists('console_question')) {
 
 if (!function_exists('get_package_version')) {
     /**
-     * 获取已安装扩展的版本号
+     * 获取已安装扩展的版本号.
      *
      * @param $packageName
+     *
      * @return false|string
      */
     function get_package_version($packageName)
