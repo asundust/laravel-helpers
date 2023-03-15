@@ -168,6 +168,8 @@ if (!function_exists('log_s')) {
     {
         if ((is_object($message) || is_string($message)) && method_exists($message, 'toArray')) {
             $message = var_export($message->toArray(), true);
+        } elseif (is_array($message)) {
+            $message = var_export($message, true);
         }
         if ($path) {
             $path = trim($path, '/') . '/';
