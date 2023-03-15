@@ -130,9 +130,9 @@ if (!function_exists('log_i')) {
             $path = $name;
         }
         config([
-            'logging.channels.'.$path.'_'.$name => [
+            'logging.channels.' . $path . '_' . $name => [
                 'driver' => 'daily',
-                'path' => storage_path('logs/'.$path.'/'.$name.'.log'),
+                'path' => storage_path('logs/' . $path . '/' . $name . '.log'),
                 'level' => 'debug',
                 'days' => $max,
             ],
@@ -146,10 +146,10 @@ if (!function_exists('log_i')) {
             }
         }
         if (!is_array($message)) {
-            logger()->channel($path.'_'.$name)->info($type.PHP_EOL.$message);
+            logger()->channel($path . '_' . $name)->info($type . PHP_EOL . $message);
         } else {
-            logger()->channel($path.'_'.$name)->info($type);
-            logger()->channel($path.'_'.$name)->info($message);
+            logger()->channel($path . '_' . $name)->info($type);
+            logger()->channel($path . '_' . $name)->info($message);
         }
     }
 }
@@ -170,14 +170,14 @@ if (!function_exists('log_s')) {
             $message = var_export($message->toArray(), true);
         }
         if ($path) {
-            $path = trim($path, '/').'/';
-            create_dir(storage_path('logs/'.$path));
+            $path = trim($path, '/') . '/';
+            create_dir(storage_path('logs/' . $path));
         }
-        $handle = fopen(storage_path('logs/'.$path.$name.'-'.date('Y-m-d').'.log'), 'a');
+        $handle = fopen(storage_path('logs/' . $path . $name . '-' . date('Y-m-d') . '.log'), 'a');
         if ($appendTime) {
-            $message = '['.date('Y-m-d H:i:s').']'.$message;
+            $message = '[' . date('Y-m-d H:i:s') . ']' . $message;
         }
-        fwrite($handle, $message."\n");
+        fwrite($handle, $message . "\n");
         fclose($handle);
     }
 }
@@ -212,7 +212,7 @@ if (!function_exists('console_line')) {
             ];
             $code = $types[$type] ?? '37';
             // 30黑色，31红色，32绿色，33黄色，34蓝色，35洋红，36青色，37白色，
-            echo chr(27).'['.$code.'m'."$text".chr(27).'[0m'.PHP_EOL;
+            echo chr(27) . '[' . $code . 'm' . "$text" . chr(27) . '[0m' . PHP_EOL;
         }
     }
 }
