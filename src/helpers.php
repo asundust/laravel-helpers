@@ -71,20 +71,19 @@ if (!function_exists('mda')) {
     }
 }
 
-if (!function_exists('number_format')) {
+if (!function_exists('num_format')) {
     /**
-     * 数字格式化.
+     * 数值格式化.
      *
-     * @param string|int $number  数字
+     * @param string|int|float|null $num  数值
      * @param int        $decimal 保留小数位数
      */
-    function number_format($number, $decimal = 2)
+    function num_format($num, $decimal = 2)
     {
-        if (null == $number || '' == $number) {
-            return '0.00';
+        if ($num === null || $num === '') {
+            $num = 0;
         }
-
-        return sprintf('%01.'.$decimal.'f', $number);
+        return number_format((float)$num, $decimal, '.', '');
     }
 }
 
@@ -100,7 +99,7 @@ if (!function_exists('pluck_to_array')) {
      */
     function pluck_to_array($array, $value = 'value', $key = 'id')
     {
-        if (is_object($array) && method_exists($array, 'toArray')) {
+        if ((is_object($array) || is_string($array)) && method_exists($array, 'toArray')) {
             $array = $array->toArray();
         }
         $data = [];
@@ -167,7 +166,7 @@ if (!function_exists('log_s')) {
      */
     function log_s($message, $path = '', $name = 'log', $appendTime = false)
     {
-        if (method_exists($message, 'toArray')) {
+        if ((is_object($message) || is_string($message)) && method_exists($message, 'toArray')) {
             $message = var_export($message->toArray(), true);
         }
         if ($path) {
