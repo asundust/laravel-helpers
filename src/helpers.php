@@ -271,3 +271,21 @@ if (!function_exists('get_package_version')) {
         }
     }
 }
+
+if (!function_exists('new_request')) {
+    /**
+     * 新建一个请求对象.
+     *
+     * @param array $params
+     * @return \GuzzleHttp\Client
+     */
+    function new_request(array $params = [])
+    {
+        $config = array_merge([
+            'timeout' => 10,
+            'verify' => false,
+            'http_errors' => false,
+        ], $params);
+        return new \GuzzleHttp\Client($config);
+    }
+}
