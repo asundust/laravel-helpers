@@ -289,3 +289,49 @@ if (!function_exists('new_request')) {
         return new \GuzzleHttp\Client($config);
     }
 }
+
+if (!function_exists('api_success')) {
+    /**
+     * Api成功返回
+     *
+     * @param mixed $message
+     * @param array $data
+     * @param int $code
+     * @return \Illuminate\Http\JsonResponse
+     */
+    function api_success(mixed $message, array $data = [], int $code = 0): \Illuminate\Http\JsonResponse
+    {
+        if (!is_string($message)) {
+            $data = $message;
+            $message = '';
+        }
+        return response()->json([
+            'code' => $code,
+            'message' => $message,
+            'data' => $data,
+        ]);
+    }
+}
+
+if (!function_exists('api_error')) {
+    /**
+     * Api错误返回
+     *
+     * @param mixed $message
+     * @param array $data
+     * @param int $code
+     * @return void
+     */
+    function api_error(mixed $message, array $data = [], int $code = 1): void
+    {
+        if (!is_string($message)) {
+            $data = $message;
+            $message = '操作失败';
+        }
+        response()->json([
+            'code' => $code,
+            'message' => $message,
+            'data' => $data,
+        ])->throwResponse();
+    }
+}
