@@ -5,7 +5,7 @@ if (!function_exists('da')) {
      * dd打印封装 不断点
      * 如果能转成toArray()则转成数组.
      *
-     * @param ...$args
+     * @param ...$vars
      *
      * @return void
      */
@@ -14,34 +14,12 @@ if (!function_exists('da')) {
         if (!\in_array(\PHP_SAPI, ['cli', 'phpdbg', 'embed'], true) && !headers_sent()) {
             header('HTTP/1.1 500 Internal Server Error');
         }
-
-        if (version_compare(get_package_version('symfony/var-dumper'), '7.0', '>=')) {
-            if (!$vars) {
-                \Symfony\Component\VarDumper\VarDumper::dump(new \Symfony\Component\VarDumper\Caster\ScalarStub('🐛'));
-                exit(1);
+        $varDumper = new Symfony\Component\VarDumper\VarDumper();
+        foreach ($vars as $x) {
+            if ((is_object($x) || is_string($x)) && method_exists($x, 'toArray')) {
+                $x = $x->toArray();
             }
-            if (array_key_exists(0, $vars) && 1 === count($vars)) {
-                $v = $vars[0];
-                if ((is_object($v) || is_string($v)) && method_exists($v, 'toArray')) {
-                    $v = $v->toArray();
-                }
-                \Symfony\Component\VarDumper\VarDumper::dump($v);
-            } else {
-                foreach ($vars as $k => $v) {
-                    if ((is_object($v) || is_string($v)) && method_exists($v, 'toArray')) {
-                        $v = $v->toArray();
-                    }
-                    \Symfony\Component\VarDumper\VarDumper::dump($v, is_int($k) ? 1 + $k : $k);
-                }
-            }
-        } else {
-            $varDumper = new Symfony\Component\VarDumper\VarDumper();
-            foreach ($vars as $x) {
-                if ((is_object($x) || is_string($x)) && method_exists($x, 'toArray')) {
-                    $x = $x->toArray();
-                }
-                $varDumper->dump($x);
-            }
+            $varDumper->dump($x);
         }
     }
 }
@@ -51,16 +29,16 @@ if (!function_exists('dda')) {
      * dd打印封装 并断点
      * 如果能转成toArray()则转成数组.
      *
-     * @param mixed $args
+     * @param mixed $vars
      */
     /**
-     * @param ...$args
+     * @param ...$vars
      *
      * @return void
      */
-    function dda(...$args)
+    function dda(...$vars)
     {
-        da(...$args);
+        da(...$vars);
         exit(1);
     }
 }
@@ -70,12 +48,12 @@ if (!function_exists('ma')) {
      * 移动版dd打印封装 不断点
      * 如果能转成toArray()则转成数组.
      *
-     * @param mixed $args
+     * @param mixed $vars
      */
-    function ma(...$args)
+    function ma(...$vars)
     {
         echo '<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">';
-        da(...$args);
+        da(...$vars);
     }
 }
 
@@ -84,11 +62,11 @@ if (!function_exists('mda')) {
      * 移动版dd打印封装 并断点
      * 如果能转成toArray()则转成数组.
      *
-     * @param mixed $args
+     * @param mixed $vars
      */
-    function mda(...$args)
+    function mda(...$vars)
     {
-        ma(...$args);
+        ma(...$vars);
         exit(1);
     }
 }
