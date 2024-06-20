@@ -9,17 +9,39 @@ if (!function_exists('da')) {
      *
      * @return void
      */
-    function da(...$args)
+    function da(...$vars)
     {
-        if (!in_array(\PHP_SAPI, ['cli', 'phpdbg'], true) && !headers_sent()) {
+        if (!\in_array(\PHP_SAPI, ['cli', 'phpdbg', 'embed'], true) && !headers_sent()) {
             header('HTTP/1.1 500 Internal Server Error');
         }
-        $varDumper = new Symfony\Component\VarDumper\VarDumper();
-        foreach ($args as $x) {
-            if ((is_object($x) || is_string($x)) && method_exists($x, 'toArray')) {
-                $x = $x->toArray();
+
+        if (version_compare(get_package_version('symfony/var-dumper'), '7.0', '>=')) {
+            if (!$vars) {
+                \Symfony\Component\VarDumper\VarDumper::dump(new \Symfony\Component\VarDumper\Caster\ScalarStub('🐛'));
+                exit(1);
             }
-            $varDumper->dump($x);
+            if (array_key_exists(0, $vars) && 1 === count($vars)) {
+                $v = $vars[0];
+                if ((is_object($v) || is_string($v)) && method_exists($v, 'toArray')) {
+                    $v = $v->toArray();
+                }
+                \Symfony\Component\VarDumper\VarDumper::dump($v);
+            } else {
+                foreach ($vars as $k => $v) {
+                    if ((is_object($v) || is_string($v)) && method_exists($v, 'toArray')) {
+                        $v = $v->toArray();
+                    }
+                    \Symfony\Component\VarDumper\VarDumper::dump($v, is_int($k) ? 1 + $k : $k);
+                }
+            }
+        } else {
+            $varDumper = new Symfony\Component\VarDumper\VarDumper();
+            foreach ($vars as $x) {
+                if ((is_object($x) || is_string($x)) && method_exists($x, 'toArray')) {
+                    $x = $x->toArray();
+                }
+                $varDumper->dump($x);
+            }
         }
     }
 }
