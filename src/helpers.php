@@ -89,15 +89,14 @@ if (!function_exists('num_format')) {
 
 if (!function_exists('pluck_to_array')) {
     /**
-     * [$id$ => $value$, ...] 转成 [['id' => $id$, 'value' => $value$], ...] 方法.
+     * [$VALUE$ => $LABEL$, ...] 转成 [['value' => $VALUE$, 'label' => $LABEL$], ...] 方法.
      *
      * @param $array
-     * @param string $value
-     * @param string $key
-     *
+     * @param string $label 值（展示）
+     * @param string $value 键（隐藏）
      * @return array
      */
-    function pluck_to_array($array, $value = 'value', $key = 'id')
+    function pluck_to_array($array, $label = 'label', $value = 'value')
     {
         if ((is_object($array) || is_string($array)) && method_exists($array, 'toArray')) {
             $array = $array->toArray();
@@ -105,8 +104,8 @@ if (!function_exists('pluck_to_array')) {
         $data = [];
         foreach ($array as $k => $v) {
             $data[] = [
-                $key => $k,
-                $value => $v,
+                $value => $k,
+                $label => $v,
             ];
         }
 
