@@ -113,6 +113,28 @@ if (!function_exists('pluck_to_array')) {
     }
 }
 
+if (!function_exists('string_to_array')) {
+    /**
+     * 拼接字符串转成数组
+     *
+     * @param mixed $string 原始字符串
+     * @param array $replaces 额外被替换的字符
+     * @param string $separator 切割字符，默认为“,”
+     * @return array
+     */
+    function string_to_array($string, array $replaces = [], string $separator = ','): array
+    {
+        foreach ($replaces as $replace) {
+            $string = str_replace($replace, $separator, $string);
+        }
+        $arr = array_filter(array_unique(explode($separator, $string)));
+        foreach ($arr as &$value) {
+            $value = trim($value);
+        }
+        return $arr;
+    }
+}
+
 if (!function_exists('log_i')) {
     /**
      * 快速日志打印 - 详细.
