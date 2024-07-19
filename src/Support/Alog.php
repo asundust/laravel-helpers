@@ -163,7 +163,7 @@ class Alog
         // 标题处理
         $title = '';
         if ($this->titleSet) {
-            if ($title) {
+            if ($this->title) {
                 $title = "[$this->title] => ";
             } else {
                 $title = '[无] => ';
