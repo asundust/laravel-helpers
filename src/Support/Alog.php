@@ -2,8 +2,14 @@
 
 namespace Asundust\Helpers\Support;
 
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
+
 class Alog
 {
+    protected mixed $title = ''; // 标题
+    protected bool $titleSet = false; // 标题是否设置
+
     /**
      * Alog constructor
      *
@@ -24,48 +30,117 @@ class Alog
     ) {
     }
 
+    /**
+     * 设置标题
+     *
+     * @param mixed $title
+     * @return $this
+     */
+    public function title(mixed $title)
+    {
+        $this->title = $title;
+        $this->titleSet = true;
+        return $this;
+    }
+
+    /**
+     * 紧急
+     *
+     * @param ...$message
+     * @return void
+     */
     public function emergency(...$message): void
     {
         $this->log('emergency', $message);
     }
 
+    /**
+     * 警告
+     *
+     * @param ...$message
+     * @return void
+     */
     public function alert(...$message): void
     {
         $this->log('alert', $message);
     }
 
+    /**
+     * 关键
+     *
+     * @param ...$message
+     * @return void
+     */
     public function critical(...$message): void
     {
         $this->log('critical', $message);
     }
 
+    /**
+     * 错误
+     *
+     * @param ...$message
+     * @return void
+     */
     public function error(...$message): void
     {
         $this->log('error', $message);
     }
 
+    /**
+     * 警告
+     *
+     * @param ...$message
+     * @return void
+     */
     public function warning(...$message): void
     {
         $this->log('warning', $message);
     }
 
+    /**
+     * 通知
+     *
+     * @param ...$message
+     * @return void
+     */
     public function notice(...$message): void
     {
         $this->log('notice', $message);
     }
 
+    /**
+     * 信息
+     *
+     * @param ...$message
+     * @return void
+     */
     public function info(...$message): void
     {
         $this->log('info', $message);
     }
 
+    /**
+     * 调试
+     *
+     * @param ...$message
+     * @return void
+     */
     public function debug(...$message): void
     {
         $this->log('debug', $message);
     }
 
-    protected function log($level, $message): void
+    /**
+     * 记录日志
+     *
+     * @param string $level
+     * @param $message
+     * @return void
+     */
+    protected function log(string $level, $message): void
     {
+        // 配置处理
         $channelConfig = config('logging.channels.daily', []);
         config([
             "logging.channels.$this->channel" => array_merge($channelConfig, [
@@ -74,6 +149,7 @@ class Alog
                 'days' => $this->days,
             ], $this->configs)
         ]);
+        // 文件信息
         $fileInfo = '';
         if (function_exists('debug_backtrace')) {
             $traces = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
@@ -84,14 +160,29 @@ class Alog
                 }
             }
         }
+        // 标题处理
+        $title = '';
+        if ($this->titleSet) {
+            if ($title) {
+                $title = "[$this->title] => ";
+            } else {
+                $title = '[无] => ';
+            }
+            $this->title = '';
+            $this->titleSet = false;
+        }
+        // 消息处理
         if (is_array($message) && count($message) == 1) {
             $message = $message[0];
         }
         if (is_array($message)) {
-            logger()->channel($this->channel)->$level($fileInfo);
-            logger()->channel($this->channel)->$level($message);
-        } else {
-            logger()->channel($this->channel)->$level($fileInfo . PHP_EOL . $message);
+            $message = var_export($message, true);
+        } elseif ($message instanceof Jsonable) {
+            $message = $message->toJson();
+        } elseif ($message instanceof Arrayable) {
+            $message = var_export($message->toArray(), true);
         }
+        // 日志记录
+        logger()->channel($this->channel)->$level($fileInfo . PHP_EOL . $title . (string)$message);
     }
 }
