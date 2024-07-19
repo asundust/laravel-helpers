@@ -9,12 +9,12 @@ if (!function_exists('da')) {
      *
      * @return void
      */
-    function da(...$vars)
+    function da(...$vars): void
     {
         if (!\in_array(\PHP_SAPI, ['cli', 'phpdbg', 'embed'], true) && !headers_sent()) {
             header('HTTP/1.1 500 Internal Server Error');
         }
-        $varDumper = new Symfony\Component\VarDumper\VarDumper();
+        $varDumper = new \Symfony\Component\VarDumper\VarDumper();
         foreach ($vars as $x) {
             if ((is_object($x) || is_string($x)) && method_exists($x, 'toArray')) {
                 $x = $x->toArray();
@@ -36,7 +36,7 @@ if (!function_exists('dda')) {
      *
      * @return void
      */
-    function dda(...$vars)
+    function dda(...$vars): void
     {
         da(...$vars);
         exit(1);
@@ -50,7 +50,7 @@ if (!function_exists('ma')) {
      *
      * @param mixed $vars
      */
-    function ma(...$vars)
+    function ma(...$vars): void
     {
         echo '<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">';
         da(...$vars);
@@ -64,7 +64,7 @@ if (!function_exists('mda')) {
      *
      * @param mixed $vars
      */
-    function mda(...$vars)
+    function mda(...$vars): void
     {
         ma(...$vars);
         exit(1);
@@ -75,10 +75,12 @@ if (!function_exists('num_format')) {
     /**
      * 数值格式化.
      *
-     * @param string|int|float|null $num  数值
-     * @param int        $decimal 保留小数位数
+     * @param mixed $num  数值
+     * @param int $decimal 保留小数位数
+     *
+     * @return string
      */
-    function num_format($num, $decimal = 2)
+    function num_format(mixed $num, int $decimal = 2): string
     {
         if ($num === null || $num === '') {
             $num = 0;
@@ -96,7 +98,7 @@ if (!function_exists('pluck_to_array')) {
      * @param string $value 键（隐藏）
      * @return array
      */
-    function pluck_to_array($array, $label = 'label', $value = 'value')
+    function pluck_to_array($array, string $label = 'label', string $value = 'value'): array
     {
         if ((is_object($array) || is_string($array)) && method_exists($array, 'toArray')) {
             $array = $array->toArray();
@@ -122,7 +124,7 @@ if (!function_exists('string_to_array')) {
      * @param string $separator 切割字符，默认为“,”
      * @return array
      */
-    function string_to_array($string, array $replaces = [], string $separator = ','): array
+    function string_to_array(mixed $string, array $replaces = [], string $separator = ','): array
     {
         foreach ($replaces as $replace) {
             $string = str_replace($replace, $separator, $string);
@@ -135,43 +137,21 @@ if (!function_exists('string_to_array')) {
     }
 }
 
-if (!function_exists('log_i')) {
+if (!function_exists('alog')) {
     /**
-     * 快速日志打印 - 详细.
-     * log_info => log_i.
+     * 自定义快捷日志函数
      *
-     * @param array|string|null $message 日志信息
-     * @param string|null       $name    日志文件名
-     * @param string|null       $path    日志写入路径
-     * @param int               $max     该目录下最大日志文件数
+     * @param string $path 日志路径，可以多级
+     * @param string $name 日志文件名
+     * @param int $days 保留天数
+     * @param string $driver 驱动
+     * @param array $configs 额外配置
+     * @param string $channel 通道，用于日志的基础配置
+     * @return \Asundust\Helpers\Support\Alog
      */
-    function log_i($message = '', $name = 'test', $path = '', $max = 14)
+    function alog(string $name = 'custom', string $path = 'custom', int $days = 14, string $driver = 'daily', array $configs = [], string $channel = 'daily'): \Asundust\Helpers\Support\Alog
     {
-        if (0 == strlen($path)) {
-            $path = $name;
-        }
-        config([
-            'logging.channels.' . $path . '_' . $name => [
-                'driver' => 'daily',
-                'path' => storage_path('logs/' . $path . '/' . $name . '.log'),
-                'level' => 'debug',
-                'days' => $max,
-            ],
-        ]);
-        $type = '';
-        if (function_exists('debug_backtrace') && debug_backtrace()) {
-            $first = Illuminate\Support\Arr::first(debug_backtrace());
-            if (is_array($first) && isset($first['file']) && isset($first['line'])) {
-                $str = substr(str_replace(base_path(), '', $first['file']), 1);
-                $type = "{$str}:{$first['line']}";
-            }
-        }
-        if (!is_array($message)) {
-            logger()->channel($path . '_' . $name)->info($type . PHP_EOL . $message);
-        } else {
-            logger()->channel($path . '_' . $name)->info($type);
-            logger()->channel($path . '_' . $name)->info($message);
-        }
+        return new \Asundust\Helpers\Support\Alog($name, $path, $days, $driver, $configs, $channel);
     }
 }
 
@@ -283,7 +263,7 @@ if (!function_exists('get_package_version')) {
      *
      * @return false|string
      */
-    function get_package_version($packageName)
+    function get_package_version($packageName): bool|string
     {
         try {
             return \Composer\InstalledVersions::getVersion($packageName);
@@ -300,7 +280,7 @@ if (!function_exists('new_request')) {
      * @param array $params
      * @return \GuzzleHttp\Client
      */
-    function new_request(array $params = [])
+    function new_request(array $params = []): \GuzzleHttp\Client
     {
         $config = array_merge([
             'timeout' => 10,
