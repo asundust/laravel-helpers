@@ -17,13 +17,11 @@ class Alog
     public function __construct(
         protected string $name = 'custom',
         protected string $path = 'custom',
-        protected int    $days = 14,
+        protected int $days = 14,
         protected string $driver = 'daily',
-        protected array  $configs = [],
+        protected array $configs = [],
         protected string $channel = 'custom'
-    )
-    {
-
+    ) {
     }
 
     public function emergency(...$message): void
