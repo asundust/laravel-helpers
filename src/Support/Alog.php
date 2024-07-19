@@ -33,10 +33,10 @@ class Alog
     /**
      * 设置标题
      *
-     * @param mixed $title
+     * @param mixed|null $title
      * @return $this
      */
-    public function title(mixed $title)
+    public function title(mixed $title = null)
     {
         $this->title = $title;
         $this->titleSet = true;
