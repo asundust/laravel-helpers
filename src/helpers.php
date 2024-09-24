@@ -141,8 +141,8 @@ if (!function_exists('alog')) {
     /**
      * 自定义快捷日志函数
      *
-     * @param string $path 日志路径，可以多级
      * @param string $name 日志文件名
+     * @param string $path 日志路径，可以多级
      * @param int $days 保留天数
      * @param string $driver 驱动
      * @param array $configs 额外配置
