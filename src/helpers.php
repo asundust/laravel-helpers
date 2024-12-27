@@ -321,15 +321,15 @@ if (!function_exists('api_error')) {
      * @param mixed $message
      * @param array $data
      * @param int $code
-     * @return void
+     * @return never
      */
-    function api_error(mixed $message, array $data = [], int $code = 1): void
+    function api_error(mixed $message, array $data = [], int $code = 1)
     {
         if (!is_string($message)) {
             $data = $message;
             $message = '操作失败';
         }
-        response()->json([
+        return response()->json([
             'code' => $code,
             'message' => $message,
             'data' => $data,
