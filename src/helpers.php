@@ -129,11 +129,11 @@ if (!function_exists('string_to_array')) {
         foreach ($replaces as $replace) {
             $string = str_replace($replace, $separator, $string);
         }
-        $arr = array_filter(array_unique(explode($separator, $string)));
-        foreach ($arr as &$value) {
-            $value = trim($value);
+        $items = array_filter(array_unique(explode($separator, $string)));
+        foreach ($items as &$item) {
+            $item = trim($item);
         }
-        return $arr;
+        return $items;
     }
 }
 
