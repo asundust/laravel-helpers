@@ -146,10 +146,10 @@ if (!function_exists('alog')) {
      * @param int $days 保留天数
      * @param string $driver 驱动
      * @param array $configs 额外配置
-     * @param string $channel 通道，用于日志的基础配置
+     * @param string $channel 通道，用于日志的基础配置x
      * @return \Asundust\Helpers\Support\Alog
      */
-    function alog(string $name = 'custom', string $path = 'custom', int $days = 14, string $driver = 'daily', array $configs = [], string $channel = 'custom'): \Asundust\Helpers\Support\Alog
+    function alog(string $name = 'custom', string $path = 'custom', int $days = 14, string $driver = 'daily', array $configs = [], string $channel = null): \Asundust\Helpers\Support\Alog
     {
         return new \Asundust\Helpers\Support\Alog($name, $path, $days, $driver, $configs, $channel);
     }
