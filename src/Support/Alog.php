@@ -26,8 +26,11 @@ class Alog
         protected int $days = 14,
         protected string $driver = 'daily',
         protected array $configs = [],
-        protected string $channel = 'custom'
+        protected ?string $channel = null
     ) {
+        if (!$this->channel) {
+            $this->channel = md5($this->name . $this->path);
+        }
     }
 
     /**
