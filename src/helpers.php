@@ -126,10 +126,13 @@ if (!function_exists('string_to_array')) {
      */
     function string_to_array(mixed $string, array $replaces = [], string $separator = ','): array
     {
+        if (is_null($string)) {
+            $string = '';
+        }
         foreach ($replaces as $replace) {
             $string = str_replace($replace, $separator, $string);
         }
-        $items = array_filter(array_unique(explode($separator, $string ?: '')));
+        $items = array_filter(array_unique(explode($separator, $string)));
         foreach ($items as &$item) {
             $item = trim($item);
         }
