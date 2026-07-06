@@ -167,24 +167,42 @@ if (!function_exists('log_s')) {
      * @param string            $path
      * @param string            $name
      * @param bool              $appendTime
+     * @param int               $max        日志保留天数
      */
-    function log_s($message, $path = '', $name = 'log', $appendTime = false)
+    function log_s($message, $path = '', $name = 'log', $appendTime = false, $max = 14)
     {
         if ((is_object($message) || is_string($message)) && method_exists($message, 'toArray')) {
             $message = var_export($message->toArray(), true);
         } elseif (is_array($message)) {
             $message = var_export($message, true);
         }
+        $logDir = storage_path('logs');
         if ($path) {
             $path = trim($path, '/') . '/';
-            create_dir(storage_path('logs/' . $path));
+            $logDir = storage_path('logs/' . $path);
+            create_dir($logDir);
         }
-        $handle = fopen(storage_path('logs/' . $path . $name . '-' . date('Y-m-d') . '.log'), 'a');
+        $handle = fopen($logDir . '/' . $name . '-' . date('Y-m-d') . '.log', 'a');
         if ($appendTime) {
             $message = '[' . date('Y-m-d H:i:s') . ']' . $message;
         }
         fwrite($handle, $message . "\n");
         fclose($handle);
+
+        $max = (int)$max;
+        if ($max > 0 && is_dir($logDir)) {
+            $keepDate = strtotime(date('Y-m-d') . ' -' . ($max - 1) . ' days');
+            $pattern = '/^' . preg_quote($name, '/') . '-(\d{4}-\d{2}-\d{2})\.log$/';
+            foreach (scandir($logDir) as $file) {
+                if (!preg_match($pattern, $file, $matches)) {
+                    continue;
+                }
+                $fileDate = strtotime($matches[1]);
+                if ($fileDate !== false && $fileDate < $keepDate) {
+                    unlink($logDir . '/' . $file);
+                }
+            }
+        }
     }
 }
 
